@@ -1,0 +1,388 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MTCSharp</name>
+    </assembly>
+    <members>
+        <member name="T:MTConnectSharp.MTConnectClient">
+            <summary>
+            Connects to a single agent and streams data from it.
+            </summary>
+        </member>
+        <member name="E:MTConnectSharp.MTConnectClient.ProbeCompleted">
+            <summary>
+            The probe response has been recieved and parsed
+            </summary>
+        </member>
+        <member name="E:MTConnectSharp.MTConnectClient.DataItemsChanged">
+            <summary>
+            All data items in a current or sample response have been parsed
+            </summary>
+        </member>
+        <member name="E:MTConnectSharp.MTConnectClient.DataItemChanged">
+            <summary>
+            The value of a data item changed
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.MTConnectClient.AgentUri">
+            <summary>
+            The base uri of the agent
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.MTConnectClient.UpdateInterval">
+            <summary>
+            Time in milliseconds between sample queries when simulating a streaming connection
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.MTConnectClient.Devices">
+            <summary>
+            Devices on the connected agent
+            </summary>
+        </member>
+        <member name="F:MTConnectSharp.MTConnectClient.dataItemsRef">
+            <summary>
+            Dictionary Reference to all data items by id for better performance when streaming
+            </summary>
+        </member>
+        <member name="F:MTConnectSharp.MTConnectClient.restClient">
+            <summary>
+            RestSharp RestClient
+            </summary>
+        </member>
+        <member name="F:MTConnectSharp.MTConnectClient.lastSequence">
+            <summary>
+            Last sequence number read from current or sample
+            </summary>
+        </member>
+        <member name="F:MTConnectSharp.MTConnectClient.nextSequence">
+            <summary>
+            Next sequence number to read from current or sample
+            </summary>
+        </member>
+        <member name="F:MTConnectSharp.MTConnectClient.instanceId">
+            <summary>
+            Response instance id
+            </summary>
+        </member>
+        <member name="M:MTConnectSharp.MTConnectClient.#ctor">
+            <summary>
+            Initializes a new Client 
+            </summary>
+        </member>
+        <member name="M:MTConnectSharp.MTConnectClient.#ctor(System.String,System.Int32)">
+            <summary>
+            Initializes a new Client and connects to the agent
+            </summary>
+            <param name="agentUri">The base uri of the agent</param>
+            <param name="targetTags">The requird XML tags</param>
+        </member>
+        <member name="M:MTConnectSharp.MTConnectClient.GetCurrentState">
+            <summary>
+            Gets current response and updates DataItems
+            </summary>
+        </member>
+        <member name="M:MTConnectSharp.MTConnectClient.Probe">
+            <summary>
+            Gets probe response from the agent and populates the devices collection
+            </summary>
+        </member>
+        <member name="M:MTConnectSharp.MTConnectClient.parseProbeResponse(RestSharp.IRestResponse)">
+            <summary>
+            Parses IRestResponse from a probe command into a Device collection
+            </summary>
+            <param name="response">An IRestResponse from a probe command</param>
+        </member>
+        <member name="M:MTConnectSharp.MTConnectClient.FillDataItemRefList">
+            <summary>
+            Loads DataItemRefList with all data items from all devices
+            </summary>
+        </member>
+        <member name="M:MTConnectSharp.MTConnectClient.GetDataItems(MTConnectSharp.Component[])">
+            <summary>
+            Recursive function to get DataItems list from a Component collection
+            </summary>
+            <param name="Components">Collection of Components</param>
+            <returns>Collection of DataItems from passed Component collection</returns>
+        </member>
+        <member name="M:MTConnectSharp.MTConnectClient.parseStream(RestSharp.IRestResponse)">
+            <summary>
+            Parses response from a current or sample request, updates changed data items and fires events
+            </summary>
+            <param name="response">IRestResponse from the MTConnect request</param>
+        </member>
+        <member name="M:MTConnectSharp.MTConnectClient.GetDeviceList(System.String)">
+            <summary>
+            Get list of devices the agent is currently streaming the data from.
+            </summary>
+            <param name="baseURL">URL for agent</param>
+            <returns>List of names of devices</returns>
+        </member>
+        <member name="T:MTConnectSharp.Component">
+            <summary>
+            Represents a component in the probe response document
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.Component.Type">
+            <summary>
+            The component type
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.Component.NativeName">
+            <summary>
+            Value of the nativeName attribute
+            </summary>
+        </member>
+        <member name="F:MTConnectSharp.Component.dataItems">
+            <summary>
+            The DataItems which belong to this component
+            </summary>
+        </member>
+        <member name="F:MTConnectSharp.Component.components">
+            <summary>
+            The Components which belong to this component
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.Component.DataItems">
+            <summary>
+            Array of the DataItems collection for COM Interop
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.Component.Components">
+            <summary>
+            Array of the Components collection for COM Interop
+            </summary>
+        </member>
+        <member name="M:MTConnectSharp.Component.#ctor(System.Xml.Linq.XElement)">
+            <summary>
+            Creates a new component
+            </summary>
+        </member>
+        <member name="T:MTConnectSharp.DataItem">
+            <summary>
+            Represents a DataItem in the MTConnect probe response
+            </summary>
+        </member>
+        <member name="E:MTConnectSharp.DataItem.SampleAdded">
+            <summary>
+            A new DataItemSample was added to the value buffer
+            </summary>
+        </member>
+        <member name="F:MTConnectSharp.DataItem.dataItemSamples">
+            <summary>
+            DataItemSample collection as a Queue for correct circular buffer behavior
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.DataItem.Category">
+            <summary>
+            Value of the category attribute
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.DataItem.Type">
+            <summary>
+            Value of the type attribute
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.DataItem.SubType">
+            <summary>
+            Value of the subType attribute
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.DataItem.Units">
+            <summary>
+            Value of the units attribute
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.DataItem.NativeUnits">
+            <summary>
+            Value of the nativeUnits attribute
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.DataItem.BufferSize">
+            <summary>
+            The maximum number of samples to keep in the value buffer
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.DataItem.PreviousSample">
+            <summary>
+            The value immediately before the value
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.DataItem.CurrentSample">
+            <summary>
+            The current value of this DataItem
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.DataItem.SampleHistory">
+            <summary>
+            Every value in the buffer
+            </summary>
+        </member>
+        <member name="M:MTConnectSharp.DataItem.#ctor(System.Xml.Linq.XElement)">
+            <summary>
+            Creates a new DataItem
+            </summary>
+            <param name="xmlDataItem">The XElement which defines the DataItem</param>
+        </member>
+        <member name="M:MTConnectSharp.DataItem.AddSample(MTConnectSharp.DataItemSample)">
+            <summary>
+            Adds a sample to the value buffer and removes the oldest value if the buffer is full
+            </summary>
+            <param name="newSample">The new sample to add</param>
+        </member>
+        <member name="T:MTConnectSharp.DataItemChangedEventArgs">
+            <summary>
+            Data for the DataItemChanged Event
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.DataItemChangedEventArgs.DataItem">
+            <summary>
+            DataItem that was changed
+            </summary>
+        </member>
+        <member name="M:MTConnectSharp.DataItemChangedEventArgs.#ctor(MTConnectSharp.DataItem)">
+            <summary>
+            Class Constructor
+            </summary>
+            <param name="dataItem">The DataItem that was changed</param>
+        </member>
+        <member name="T:MTConnectSharp.DataItemSample">
+            <summary>
+            A single value from a current or sample response
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.DataItemSample.Value">
+            <summary>
+            The value of the sample
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.DataItemSample.TimeStamp">
+            <summary>
+            The timestamp of the sample
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.DataItemSample.Sequence">
+            <summary>
+            The sequence of the sample
+            </summary>
+        </member>
+        <member name="M:MTConnectSharp.DataItemSample.#ctor(System.String)">
+            <summary>
+            Creates a new sample with the current time as the timestamp
+            </summary>
+            <param name="value">Value of the sample</param>
+        </member>
+        <member name="M:MTConnectSharp.DataItemSample.#ctor(System.String,System.DateTime)">
+            <summary>
+            Creates a new sample
+            </summary>
+            <param name="value">Value of the sample</param>
+            <param name="timestamp">Timestamp of the sample</param>
+        </member>
+        <member name="M:MTConnectSharp.DataItemSample.#ctor(System.String,System.DateTime,System.String)">
+            <summary>
+            Creates a new sample
+            </summary>
+            <param name="value">Value of the sample</param>
+            <param name="timestamp">Timestamp of the sample</param>
+            <param name="sequence">Sequence of the sample</param>
+        </member>
+        <member name="M:MTConnectSharp.DataItemSample.ToString">
+            <summary>
+            Returns the Value
+            </summary>
+        </member>
+        <member name="T:MTConnectSharp.Device">
+            <summary>
+            Represents a device in the MTConnect probe response
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.Device.Description">
+            <summary>
+            Description of the device
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.Device.Manufacturer">
+            <summary>
+            Manufacturer of the device
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.Device.SerialNumber">
+            <summary>
+            Serial number of the device
+            </summary>
+        </member>
+        <member name="F:MTConnectSharp.Device.dataItems">
+            <summary>
+            The DataItems which are direct children of the device
+            </summary>
+        </member>
+        <member name="F:MTConnectSharp.Device.components">
+            <summary>
+            The components which are direct children of the device
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.Device.DataItems">
+            <summary>
+            Array of the DataItems collection for COM Interop
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.Device.Components">
+            <summary>
+            Array of the Components collection for COM Interop
+            </summary>
+        </member>
+        <member name="M:MTConnectSharp.Device.#ctor(System.Xml.Linq.XElement)">
+            <summary>
+            Creates a new device from an MTConnect XML device node
+            </summary>
+            <param name="xElem">The MTConnect XML node which defines the device</param>
+        </member>
+        <member name="T:MTConnectSharp.MTCItemBase">
+            <summary>
+            The base MTConnect Item Class
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.MTCItemBase.id">
+            <summary>
+            Value of the id attribute
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.MTCItemBase.Name">
+            <summary>
+            Value of the name attribute
+            </summary>
+        </member>
+        <member name="P:MTConnectSharp.MTCItemBase.LongName">
+            <summary>
+            Name and id of the item as a formatted string
+            </summary>
+        </member>
+        <member name="M:MTConnectSharp.MTCItemBase.ToString">
+            <summary>
+            Formatted string describing the item
+            </summary>
+        </member>
+        <member name="M:MTConnectSharp.ParseUtility.GetAttribute(System.Xml.Linq.XElement,System.String)">
+            <summary>
+            Gets a named attribute from an XElement
+            </summary>
+            <param name="xElem">The XElement to parse</param>
+            <param name="Attribute">The attribute name</param>
+            <returns>Attribute value or an empty string if not found</returns>
+        </member>
+        <member name="M:MTConnectSharp.ParseUtility.GetDataItems(System.Xml.Linq.XElement)">
+            <summary>
+            Builds a collection of DataItems from an XElement
+            </summary>
+            <param name="xElem">The XElement to parse</param>
+            <returns>A Collection of DataItems</returns>
+        </member>
+        <member name="M:MTConnectSharp.ParseUtility.GetComponents(System.Xml.Linq.XElement)">
+            <summary>
+            Builds a collection of Components from an XElement
+            </summary>
+            <param name="xElem">The XElement to parse</param>
+            <returns>A Collection of Components</returns>
+        </member>
+    </members>
+</doc>
